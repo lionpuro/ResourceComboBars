@@ -1,0 +1,8 @@
+## Interface: 50500
+## Title: ResourceComboBars
+## Notes:
+## Author: lionpuro
+## Version: 1.0.0
+## SavedVariables:
+
+ResourceComboBars.lua
