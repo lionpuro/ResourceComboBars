@@ -129,7 +129,7 @@ RCB.border = CreateFrame("Frame", nil, RCB, "BackdropTemplate")
 RCB.border:SetAllPoints(RCB)
 RCB.border:SetBackdrop({
     edgeFile = "Interface\\Buttons\\WHITE8x8",
-    edgeSize = 1,
+    edgeSize = RCB.Settings.borderWidth,
     insets = { left = 0, right = 0, top = 0, bottom = 0 }
 })
 RCB.border:SetBackdropBorderColor(0, 0, 0, 1)
@@ -138,7 +138,7 @@ RCB.powerBorder = CreateFrame("Frame", nil, RCB, "BackdropTemplate")
 RCB.powerBorder:SetAllPoints(RCB.powerBG)
 RCB.powerBorder:SetBackdrop({
     edgeFile = "Interface\\Tooltips\\WHITE8x8",
-    edgeSize = 1,
+    edgeSize = RCB.Settings.borderWidth,
     insets = { left = 0, right = 0, top = 0, bottom = 0 }
 })
 RCB.powerBorder:SetBackdropBorderColor(0, 0, 0, 1)
