@@ -7,9 +7,9 @@ RCB.Settings = {
 	x = 0,
 	y = 0,
 	width = 215,
-	height = 22,
+	height = 44,
 	offsetX = 0,
-	offsetY = -146,
+	offsetY = -157,
 	borderWidth = 1,
 }
 
@@ -25,7 +25,16 @@ local function FindAura(unit, spellID, filter)
 		local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID = UnitAura(unit, i, filter)
 		if not name then return nil end
 		if spellID == auraSpellID then
-			return name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, auraSpellID
+			return name,
+				icon,
+				count,
+				debuffType,
+				duration,
+				expirationTime,
+				unitCaster,
+				canStealOrPurge,
+				nameplateShowPersonal,
+				auraSpellID
 		end
 	end
 end
@@ -34,7 +43,15 @@ local GetAuraStack = function(scanID, filter, unit, casterCheck)
 	filter = filter or "HELPFUL"
 	unit = unit or "player"
 	return function()
-		local name, icon, count, debuffType, duration, expirationTime, caster = FindAura(unit, scanID, filter)
+		local
+			name,
+			icon,
+			count,
+			debuffType,
+			duration,
+			expirationTime,
+			caster
+		= FindAura(unit, scanID, filter)
 		if casterCheck and caster ~= casterCheck then
 			count = nil
 		end
@@ -48,7 +65,7 @@ end
 
 local function getPowerColor(powerType)
 	local powerColors = {
-		[0] = {0.15, 0.15, 1, 1}, -- Mana
+		[0] = {0.25, 0.45, 1, 1}, -- Mana
 		[1] = {1, 0, 0, 1},       -- Rage
 		[2] = {1, 1, 0, 1},       -- Focus
 		[3] = {1, 1, 0, 1},       -- Energy
@@ -67,20 +84,11 @@ RCB.bg = RCB:CreateTexture(nil, "BACKGROUND")
 RCB.bg:SetAllPoints(RCB)
 RCB.bg:SetColorTexture(0, 0, 0, 0.5)
 
-RCB.border = CreateFrame("Frame", nil, RCB, "BackdropTemplate")
-RCB.border:SetAllPoints(RCB)
-RCB.border:SetBackdrop({
-    edgeFile = "Interface\\Buttons\\WHITE8x8",
-    edgeSize = 1,
-    insets = { left = 0, right = 0, top = 0, bottom = 0 }
-})
-RCB.border:SetBackdropBorderColor(0, 0, 0, 1)
-
 -- Combo bar
 RCB.comboBG = RCB:CreateTexture(nil, "BACKGROUND", nil, 1)
 RCB.comboBG:SetPoint("TOPLEFT", RCB, "TOPLEFT", 0, 0)
 RCB.comboBG:SetPoint("TOPRIGHT", RCB, "TOPRIGHT", 0, 0)
-RCB.comboBG:SetHeight(22)
+RCB.comboBG:SetHeight(RCB.Settings.height/2)
 RCB.comboBG:SetColorTexture(0.05, 0.05, 0.05, 0)
 
 RCB.comboValueText = RCB:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -94,10 +102,15 @@ RCB.comboBar:SetPoint("BOTTOMLEFT", RCB.comboBG, "BOTTOMLEFT", 0, 0)
 RCB.comboBar:SetWidth(0)
 RCB.comboBar:SetColorTexture(1, 1, 1, 1)
 
+RCB.splitter = RCB:CreateTexture(nil, "OVERLAY")
+RCB.splitter:SetSize(RCB.Settings.width, RCB.Settings.borderWidth)
+RCB.splitter:SetPoint("BOTTOMLEFT", RCB.comboBG, "BOTTOMLEFT", 0, -RCB.Settings.borderWidth)
+RCB.splitter:SetColorTexture(0, 0, 0, 1)
+
 -- Combo bar splitters
 for i = 1, (MaxComboPoints-1) do
 	local line = RCB:CreateTexture(nil, "OVERLAY")
-	line:SetSize(RCB.Settings.borderWidth, RCB.Settings.height)
+	line:SetSize(RCB.Settings.borderWidth, RCB.Settings.height/2)
 	local pos = (RCB.Settings.width - RCB.Settings.borderWidth * 2) * (i / MaxComboPoints)
 	line:SetPoint("TOPLEFT", RCB.comboBG, "TOPLEFT", pos, 0)
 	line:SetColorTexture(0, 0, 0, 1)
@@ -105,18 +118,26 @@ end
 
 -- Power bar
 RCB.powerBG = RCB:CreateTexture(nil, "BACKGROUND", nil, 1)
-RCB.powerBG:SetPoint("TOPLEFT", RCB, "BOTTOMLEFT", 0, 0)
-RCB.powerBG:SetPoint("TOPRIGHT", RCB, "BOTTOMRIGHT", 0, 0)
-RCB.powerBG:SetHeight(22)
-RCB.powerBG:SetColorTexture(0, 0, 0, 1)
+RCB.powerBG:SetPoint("BOTTOMLEFT", RCB, "BOTTOMLEFT", 0, 0)
+RCB.powerBG:SetPoint("BOTTOMRIGHT", RCB, "BOTTOMRIGHT", 0, 0)
+RCB.powerBG:SetHeight(RCB.Settings.height/2)
+RCB.powerBG:SetColorTexture(0, 0, 0, 0.0)
+
+RCB.border = CreateFrame("Frame", nil, RCB, "BackdropTemplate")
+RCB.border:SetAllPoints(RCB)
+RCB.border:SetBackdrop({
+    edgeFile = "Interface\\Buttons\\WHITE8x8",
+    edgeSize = 1,
+    insets = { left = 0, right = 0, top = 0, bottom = 0 }
+})
+RCB.border:SetBackdropBorderColor(0, 0, 0, 1)
 
 RCB.powerBorder = CreateFrame("Frame", nil, RCB, "BackdropTemplate")
-RCB.powerBorder:SetPoint("TOPLEFT", RCB.powerBG, "TOPLEFT", 0, 0)
-RCB.powerBorder:SetPoint("BOTTOMRIGHT", RCB.powerBG, "BOTTOMRIGHT", 0, 0)
+RCB.powerBorder:SetAllPoints(RCB.powerBG)
 RCB.powerBorder:SetBackdrop({
     edgeFile = "Interface\\Tooltips\\WHITE8x8",
     edgeSize = 1,
-    insets = { left = 1, right = 1, top = 1, bottom = 1 }
+    insets = { left = 0, right = 0, top = 0, bottom = 0 }
 })
 RCB.powerBorder:SetBackdropBorderColor(0, 0, 0, 1)
 
@@ -165,7 +186,7 @@ function EventHandler(self, e, ...)
 		end
 		RCB:SetPointGetter(GetAuraStack(53817, "HELPFUL"))
 		RCB()
-		local h = RCB.Settings.height
+		local h = RCB.Settings.height/2
 		RCB.comboBG:SetHeight(h)
 		RCB.powerBG:SetHeight(h)
 	elseif
