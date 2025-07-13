@@ -11,6 +11,7 @@ RCB.Settings = {
 	offsetX = 0,
 	offsetY = -157,
 	borderWidth = 1,
+	comboPointColor = {0.75, 0.5, 0.95, 1}
 }
 
 local MaxComboPoints = 5
@@ -100,7 +101,8 @@ RCB.comboBar = RCB:CreateTexture(nil, "ARTWORK")
 RCB.comboBar:SetPoint("TOPLEFT", RCB.comboBG, "TOPLEFT", 0, 0)
 RCB.comboBar:SetPoint("BOTTOMLEFT", RCB.comboBG, "BOTTOMLEFT", 0, 0)
 RCB.comboBar:SetWidth(0)
-RCB.comboBar:SetColorTexture(1, 1, 1, 1)
+local comboColor = RCB.Settings.comboPointColor or {1, 1, 1, 1}
+RCB.comboBar:SetColorTexture(unpack(comboColor))
 
 RCB.splitter = RCB:CreateTexture(nil, "OVERLAY")
 RCB.splitter:SetSize(RCB.Settings.width, RCB.Settings.borderWidth)
