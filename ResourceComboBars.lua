@@ -19,6 +19,9 @@ local GetComboPoints = function() return 0 end
 function RCB:SetPointGetter(fn)
 	GetComboPoints = fn
 end
+function SetMaxComboPoints(points)
+	MaxComboPoints = points
+end
 
 -- Helpers
 local function FindAura(unit, spellID, filter)
@@ -62,6 +65,10 @@ local GetAuraStack = function(scanID, filter, unit, casterCheck)
 			return 0,0,0
 		end
 	end
+end
+
+local function GetChi()
+	return UnitPower("player", Enum.PowerType.Chi)
 end
 
 local function getPowerColor(powerType)
@@ -186,7 +193,18 @@ function EventHandler(self, e, ...)
 		if not addonName == "ResourceComboBars" then
 			return
 		end
-		RCB:SetPointGetter(GetAuraStack(53817, "HELPFUL"))
+		local _, class = UnitClass("player")
+		if class == "SHAMAN" then
+			RCB:SetPointGetter(GetAuraStack(53817, "HELPFUL"))
+		elseif class == "MONK" then
+			RCB:SetPointGetter(GetChi)
+			-- Ascension
+			if IsPlayerSpell(115396) then
+				SetMaxComboPoints(6)
+			else
+				SetMaxComboPoints(5)
+			end
+		end
 		RCB()
 		local h = RCB.Settings.height/2
 		RCB.comboBG:SetHeight(h)
@@ -207,8 +225,6 @@ function EventHandler(self, e, ...)
 		RCB.comboValueText:SetText(points)
 		local width = (RCB.Settings.width - RCB.Settings.borderWidth) * (points / MaxComboPoints)
 		RCB.comboBar:SetWidth(width)
-		local unit = ...
-		if not unit == "player" then return end
 	end
 end
 RCB:SetScript("OnEvent", EventHandler)
@@ -247,4 +263,8 @@ function RCB_Update()
 	RCB.powerPercentText:SetText(powerPercentText)
 
 	RCB.comboValueText:SetText(GetComboPoints())
+	local points = GetComboPoints()
+	RCB.comboValueText:SetText(points)
+	local width = (RCB.Settings.width - RCB.Settings.borderWidth) * (points / MaxComboPoints)
+	RCB.comboBar:SetWidth(width)
 end
